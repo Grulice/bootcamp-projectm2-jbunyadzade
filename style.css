@@ -1,0 +1,246 @@
+/* Reset all default padding and margins */
+* {
+    margin: 0;
+    padding: 0;
+    }
+/* Remove underlines for all links */
+a {
+    text-decoration: none;
+}
+
+/* Make a fixed header and footer */
+header, footer {
+    position: fixed;
+
+    /* Font family is defined here to avoid conflicts with <main> */
+    font-family: "Source Sans Pro", sans-serif;
+}
+
+header {
+    padding: 0 10%;
+    width: 80%;
+
+    height: 60px;
+    top: 0;
+}
+
+/* Prevent main from clipping fixed parts */
+main {
+    padding: 60px 0 265px 0;
+}
+
+/* Blocks of the footer are individually padded to 0 10% to preserve bgcolor */
+footer {
+    width: 100%;
+}
+
+
+/* Header styling */
+header {
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: #f5f5f6;
+
+
+}
+
+header img {
+    height: 30px;
+}
+
+nav {
+    flex-grow: 2;
+
+    margin: 20px 200px 20px 70px;
+}
+
+.nav-list, .footer-links-list {
+    display: flex;
+
+    list-style-type: none;
+}
+
+.nav-list li {
+    margin: auto;
+    padding: 0 10px;
+}
+
+.nav-list-button {
+    color: grey;
+    font-weight: bold;
+}
+
+.nav-list-button:hover {
+    color: black;
+}
+
+.button-signin {
+    color: black;
+    background-color: white;
+    font-weight: bold;
+
+
+    border-radius: 5px;
+    padding: 10px 15px;
+}
+/* End of header styling */
+
+/* Footer styling */
+footer {
+    bottom:0;
+
+    padding-top: 3px;
+    background-color: #f5f5f6;
+}
+
+.footer-head {
+    background-color: white;
+
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+
+    min-width: 1260px;
+
+    margin-bottom: 15px;
+
+    padding: 0 10%;
+}
+
+.footer-links {
+    flex-grow: 1;
+}
+
+.footer-links p {
+    margin: 10px 0;
+}
+
+.footer-links-list {
+    display: flex;
+    justify-content: space-between;
+
+    padding-right: 40px;
+    margin: 10px 0;
+}
+
+.footer-links-list li {
+    padding: 0 10px;
+
+    /* Prevent word wrapping when viewport width gets small */
+    white-space: nowrap;
+}
+
+.footer-links-list li:first-child {
+    padding-left: 0;
+}
+
+.footer-links-button {
+    color: #833cde;
+}
+
+.footer-phonenum span {
+    font-size: x-large;
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+.footer-phonenum p {
+    color: gray;
+    text-align: right;
+    font-size: 0.9em;
+}
+
+footer hr {
+    margin: 30px 10%;
+    min-width: 1260px;
+}
+
+.footer-disclaimer {
+    padding: 0 10%;
+    margin: 30px 0;
+}
+
+.footer-disclaimer p {
+    color: gray;
+
+    min-width: 1260px;
+}
+
+.footer-endbar {
+    padding: 0 10%;
+    display: flex;
+    justify-content: space-between;
+
+    min-width: 1170px;
+}
+
+.footer-copyright p {
+    color: gray;
+}
+
+.footer-socialbar a {
+    margin: 0 10px;
+}
+
+.footer-socialbar a:last-child {
+    margin-right: 0 ;
+
+}
+.footer-socialbar a svg {
+    height: 1.3em;
+    color: gray;
+
+}
+/* End of footer styling */
+
+.main-content {
+    padding: 30px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 1260px;
+}
+
+.form {
+    width: 440px;
+    background-color: lightgray;
+
+    border-radius: 10px;
+
+    padding: 10px;
+}
+
+.form-container {
+    display:flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.form-button {
+    padding: 10px;
+    width: 100%;
+}
+
+.form-error-container {
+    margin: 10px 0 0 0;
+}
+
+.form-error {
+    color: red;
+}
+.form-error p {
+    margin: 5px 0;
+}
+
+.main-table {
+    margin: 30px;
+    border-collapse: collapse;
+    width: 60%;
+}
+
+.main-table tr td,th {
+    border: 1px solid black;
+    padding: 5px;
+}
