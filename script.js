@@ -7,7 +7,7 @@ btn_calculate.addEventListener("click", drawTable);
 
 function drawTable() {
     let initSum = Number(document.getElementById("input-initsum").value);
-    let monthlyDep = Number(document.getElementById("input-monthlydeposit").value);
+    let periodDep = Number(document.getElementById("input-monthlydeposit").value);
     let incrPerc = Number(document.getElementById("input-percrate").value);
     let depTermDays = Number(document.getElementById("input-term").value);
 
@@ -19,21 +19,25 @@ function drawTable() {
     txt_formError.innerHTML = "";
     if (isNaN(initSum) || initSum <= 0) {
         txt_formError.innerHTML += "<p>Ошибка: начальная сумма должна быть больше нуля</p>";
+        console.error("Ошибка: начальная сумма должна быть больше нуля");
         hasErrors = true;
     }
 
-    if (isNaN(monthlyDep) || monthlyDep < 0) {
+    if (isNaN(periodDep) || periodDep < 0) {
         txt_formError.innerHTML += "<p>Ошибка: сумма периодичного пополнения должна быть неотрицательной</p>";
+        console.error("Ошибка: сумма периодичного пополнения должна быть неотрицательной");
         hasErrors = true;
     }
 
-    if (isNaN(incrPerc) || incrPerc < 0 || incrPerc > 100) {
-        txt_formError.innerHTML += "<p>Ошибка: процентная ставка должна быть неотрицательной, до 100%</p>";
+    if (isNaN(incrPerc) || incrPerc <= 0 || incrPerc > 100) {
+        txt_formError.innerHTML += "<p>Ошибка: процентная ставка должна быть положительной, до 100%</p>";
+        console.error("Ошибка: процентная ставка должна быть положительной, до 100%");
         hasErrors = true;
     }
 
     if (isNaN(depTermDays) || depTermDays < 0 || depTermDays % 1 !== 0) {
         txt_formError.innerHTML += "<p>Ошибка: срок вклада должен быть положительным, целым числом</p>";
+        console.error("Ошибка: срок вклада должен быть положительным, целым числом");
         hasErrors = true;
     }
 
@@ -46,16 +50,13 @@ function drawTable() {
     let periodLen = 0;
     switch (periodType) {
         case "monthly":
-            txt_periodName.innerHTML = "Месяц";
-            periodLen = 30;
+            periodLen = 1;
             break;
         case "quarterly":
-            txt_periodName.innerHTML = "Квартал";
-            periodLen = 90;
+            periodLen = 4;
             break;
         case "yearly":
-            txt_periodName.innerHTML = "Год";
-            periodLen = 360;
+            periodLen = 12;
             break;
         default:
             // We shouldn't ever get here unless someone messes with the HTML code :)
@@ -63,7 +64,7 @@ function drawTable() {
     }
 
     //
-    let calcResult = calcPercent(initSum, monthlyDep, incrPerc, depTermDays, periodLen);
+    let calcResult = calcPercent(initSum, periodDep, incrPerc, depTermDays, periodLen);
 
     // Reset the table
     clearTable(tbl_mainTable);
@@ -87,7 +88,7 @@ function drawTable() {
             cell0.innerHTML = key;
             cell1.innerHTML = element["curPeriodLen"];
             cell2.innerHTML = element["initSum"].toFixed(2);
-            cell3.innerHTML = element["monthlyDep"].toFixed(2);
+            cell3.innerHTML = (element["monthlyDep"].toFixed(2) == 0) ? "" : element["monthlyDep"].toFixed(2);
             cell4.innerHTML = element["incrperc"].toFixed(3) + "%";
             cell5.innerHTML = element["incrperc_value"].toFixed(2);
             cell6.innerHTML = element["finalSum"].toFixed(2);
@@ -97,42 +98,43 @@ function drawTable() {
 
 }
 
-function calcPercent(in_initSum, in_monthlyDep, in_incrperc, in_depTermDays, in_periodLen) {
+function calcPercent(in_initSum, in_periodDep, in_incrperc, in_depTermDays, in_periodLen) {
     let result = {};
     let incrPercDec = in_incrperc / 100;
 
-    let periodCount = Math.ceil(in_depTermDays / in_periodLen);
+    let monthCount = Math.ceil(in_depTermDays / 30);
 
     let lastSum = in_initSum;
     let remDays = in_depTermDays;
 
-    for (let i = 1; i < periodCount + 1; i++) {
-        let curPeriod = {};
+    for (let i = 1; i < monthCount + 1; i++) {
+        let curMonth = {};
+        let depSum = (i % in_periodLen === 0) ? in_periodDep : 0;
 
         // Do not make a deposit in the first month
-        let sumWithDeposit = lastSum + ((i === 1) ? 0 : in_monthlyDep);
+        let sumWithDeposit = lastSum + depSum;
         
-        // Subtract the period length from remaining days. If it pushes remDays into negatives - 
-        // the period is incomplete and we can get its duration by reverting subtraction (also called "adding" :) )
-        remDays -= in_periodLen;
-        let curPeriodLen = (remDays > 0) ? in_periodLen : remDays + in_periodLen;
+        // Subtract the month length from remaining days. If it pushes remDays into negatives - 
+        // the month is incomplete and we can get its duration by reverting subtraction (also called "adding" :) )
+        remDays -= 30;
+        let curMonthLen = (remDays > 0) ? 30 : remDays + 30;
 
-        // Current period's increase is determined by its actual length
-        // Calculate the actual percentage for the period as its length's ratio to the year's length (360 days)
-        let curIncrPerc = curPeriodLen * incrPercDec / 360;
+        // Current month's increase is determined by its actual length
+        // Calculate the actual percentage for the month as its length's ratio to the year's length (360 days)
+        let curIncrPerc = curMonthLen * incrPercDec / 360;
 
         let finalSum = sumWithDeposit * (1 + curIncrPerc);
 
-        // Pass the results into the resulting object for current period
-        curPeriod["initSum"] = lastSum;
-        curPeriod["curPeriodLen"] = curPeriodLen;
-        curPeriod["monthlyDep"] = ((i === 1) ? 0 : in_monthlyDep);
-        curPeriod["incrperc"] = curIncrPerc * 100;
-        curPeriod["incrperc_value"] = finalSum - sumWithDeposit;
-        curPeriod["finalSum"] = finalSum;
+        // Pass the results into the resulting object for current month
+        curMonth["initSum"] = lastSum;
+        curMonth["curPeriodLen"] = curMonthLen;
+        curMonth["monthlyDep"] = depSum;
+        curMonth["incrperc"] = curIncrPerc * 100;
+        curMonth["incrperc_value"] = finalSum - sumWithDeposit;
+        curMonth["finalSum"] = finalSum;
 
-        // Save the results for the current period in the results. The key corresponds to current months' number
-        result[i.toString()] = curPeriod;
+        // Save the results for the current month in the results. The key corresponds to current months' number
+        result[i.toString()] = curMonth;
 
         // Set the lastSum for the next round of calculation
         lastSum = finalSum;
