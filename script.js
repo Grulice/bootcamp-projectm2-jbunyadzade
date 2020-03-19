@@ -35,14 +35,14 @@ function drawTable() {
         hasErrors = true;
     }
 
-    if (isNaN(depTermDays) || depTermDays < 0 || depTermDays % 1 !== 0) {
+    if (isNaN(depTermDays) || depTermDays <= 0 || depTermDays % 1 !== 0) {
         txt_formError.innerHTML += "<p>Ошибка: срок вклада должен быть положительным, целым числом</p>";
         console.error("Ошибка: срок вклада должен быть положительным, целым числом");
         hasErrors = true;
     }
 
     // don't continue execution if there are errors
-    if (hasErrors) return;
+    if (hasErrors) return NaN;
 
     // -- End of error checking
 
@@ -109,7 +109,7 @@ function calcPercent(in_initSum, in_periodDep, in_incrperc, in_depTermDays, in_p
 
     for (let i = 1; i < monthCount + 1; i++) {
         let curMonth = {};
-        let depSum = (i % in_periodLen === 0) ? in_periodDep : 0;
+        let depSum = (i % in_periodLen === 0 && i !== 1) ? in_periodDep : 0;
 
         // Do not make a deposit in the first month
         let sumWithDeposit = lastSum + depSum;
